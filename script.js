@@ -16,6 +16,8 @@ let isMouseDown = false;
 let scaleFactor = 1;
 let timeoutId;
 
+const touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+
 light.addEventListener("mousedown", () => {
   isMouseDown = true;
   light.classList.add("decreasing");
@@ -67,6 +69,19 @@ function handleMouseMove(event) {
   }, 100);
 }
 
+function handleTouchMove(e) {
+  box.innerHTML = randomString();
+  const { clientX, clientY } = e.touches[0];
+  console.log(clientX, clientY);
+  var bounding = light.getBoundingClientRect();
+  var x = (clientX - bounding.left) / scaleFactor;
+  var y = (clientY - bounding.top) / scaleFactor;
+
+  setTimeout(() => {
+    light.style.background = `radial-gradient(circle at ${x}px ${y}px, transparent 10%, rgba(0, 0, 0, 0.95) 30%)`;
+  }, 100);
+}
+
 let isThrottled = false;
 document.addEventListener("mousemove", (event) => {
   if (!isThrottled) {
@@ -79,3 +94,6 @@ document.addEventListener("mousemove", (event) => {
     }, 40);
   }
 });
+
+document.addEventListener("touchmove", handleTouchMove);
+document.addEventListener("touchstart", handleTouchMove);
